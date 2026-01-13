@@ -1,5 +1,5 @@
-import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
+const { html, LitElement } = window.ntx.lit;
 export class SetValueAndSubmit extends LitElement {
 
     static properties = {
@@ -79,4 +79,5 @@ export class SetValueAndSubmit extends LitElement {
 }
 
 customElements.define('set-value-submit2', SetValueAndSubmit);
+
 
