@@ -1,6 +1,6 @@
 
 const { html, LitElement } = window.ntx.lit;
-export class SetValueAndSubmit extends LitElement {
+class SetValueAndSubmit extends LitElement {
 
     static properties = {
         targetField: { type: String },
