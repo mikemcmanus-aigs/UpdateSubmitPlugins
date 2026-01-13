@@ -1,6 +1,5 @@
 import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
-// define the component
 export class SetValueAndSubmit extends LitElement {
 
     static properties = {
@@ -9,8 +8,6 @@ export class SetValueAndSubmit extends LitElement {
         autoSubmit: { type: Boolean }
     };
 
-    // return a promise for contract changes.
-    // trigger pages build
     static getMetaConfig() {
         return {
             controlName: 'Set Value And Submit',
@@ -42,37 +39,38 @@ export class SetValueAndSubmit extends LitElement {
         };
     }
 
-    onChange(e) {
-        const args = {
-            bubbles: true,
-            cancelable: false,
-            composed: true,
-            detail: e.target.values
-        };
-        const event = new CustomEvent('ntx-value-change', args);
-        this.dispatchEvent(event);
+    connectedCallback() {
+        super.connectedCallback();
+        // Nintex Apps form context
+        this.form = this.closest('ntx-form');
+        if (!this.form) {
+            console.warn("SetValueAndSubmit: form context not found");
+        }
     }
 
     setFieldValue() {
-        console.log('SetValueAndSubmit: setting field value');
+        console.log("SetValueAndSubmit: setting field value");
 
-        // Find the target field control
-        const field = document.querySelector(`ntx-form-control[name="${this.targetField}"]`);
+        if (!this.form) {
+            console.warn("SetValueAndSubmit: form context unavailable");
+            return;
+        }
 
-        if (field) {
-            field.value = this.valueToSet;
-
-            // Trigger Nintex change event
-            field.dispatchEvent(new Event('change', { bubbles: true }));
-        } else {
-            console.warn(`SetValueAndSubmit: field "${this.targetField}" not found`);
+        // Set the field value using Nintex API
+        try {
+            this.form.setFieldValue(this.targetField, this.valueToSet);
+            console.log(`SetValueAndSubmit: set ${this.targetField} = ${this.valueToSet}`);
+        } catch (err) {
+            console.error("SetValueAndSubmit: error setting field value", err);
         }
 
         // Submit if enabled
         if (this.autoSubmit) {
-            const submitBtn = document.querySelector('[data-e2e="btn-submit"]');
-            if (submitBtn) {
-                submitBtn.click();
+            try {
+                this.form.submit();
+                console.log("SetValueAndSubmit: form submitted");
+            } catch (err) {
+                console.error("SetValueAndSubmit: error submitting form", err);
             }
         }
     }
@@ -89,7 +87,5 @@ export class SetValueAndSubmit extends LitElement {
     }
 }
 
-// registering the web component
 const elementName = 'set-value-submit';
-
 customElements.define(elementName, SetValueAndSubmit);
