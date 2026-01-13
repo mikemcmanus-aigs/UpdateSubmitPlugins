@@ -10,7 +10,7 @@ class SetValueAndSubmit extends LitElement {
 
     static getMetaConfig() {
         return {
-            controlName: 'set-value-submit',   // MUST MATCH ELEMENT NAME
+            controlName: 'updateValue',   // MUST MATCH ELEMENT NAME
             fallbackDisableSubmit: false,
             version: '1.0',
             standardProperties: {
@@ -78,4 +78,5 @@ class SetValueAndSubmit extends LitElement {
     }
 }
 
-customElements.define('set-value-submit', SetValueAndSubmit);
+
+customElements.define('updateValue', SetValueAndSubmit);
