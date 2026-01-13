@@ -10,7 +10,7 @@ export class SetValueAndSubmit extends LitElement {
 
     static getMetaConfig() {
         return {
-            controlName: 'Set Value And Submit',
+            controlName: 'set-value-submit',   // MUST MATCH ELEMENT NAME
             fallbackDisableSubmit: false,
             version: '1.0',
             standardProperties: {
@@ -35,7 +35,7 @@ export class SetValueAndSubmit extends LitElement {
         };
     }
 
-    // Nintex Apps injects the form API here
+    // Nintex injects the form context here
     onFormReady(form) {
         console.log("SetValueAndSubmit: form ready");
         this.form = form;
