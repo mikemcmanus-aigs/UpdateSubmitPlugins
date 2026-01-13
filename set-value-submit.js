@@ -10,6 +10,7 @@ export class SetValueAndSubmit extends LitElement {
     };
 
     // return a promise for contract changes.
+    // trigger pages build
     static getMetaConfig() {
         return {
             controlName: 'Set Value And Submit',
@@ -90,4 +91,5 @@ export class SetValueAndSubmit extends LitElement {
 
 // registering the web component
 const elementName = 'set-value-submit';
+
 customElements.define(elementName, SetValueAndSubmit);
