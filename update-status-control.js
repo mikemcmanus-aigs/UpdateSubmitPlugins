@@ -27,15 +27,24 @@ export class UpdateStatusAndControl extends LitElement {
     this.statusField = '';
     this.statusValue = '';
     this.autoSubmit = false;
+    this.form = null;
+  }
+
+  // Nintex Apps injects the form context here
+  onFormReady(form) {
+    this.form = form;
   }
 
   handleClick() {
-    const form = this.closest('nws-form');
-    if (form) {
-      form.setFieldValue(this.statusField, this.statusValue);
-      if (this.autoSubmit) {
-        form.submit();
-      }
+    if (!this.form) {
+      console.warn("Form context not available");
+      return;
+    }
+
+    this.form.setFieldValue(this.statusField, this.statusValue);
+
+    if (this.autoSubmit) {
+      this.form.submit();
     }
   }
 
@@ -74,6 +83,4 @@ export const MetaConfig = {
       description: 'Submit the form immediately after updating the status.'
     }
   }
-
 };
-
