@@ -51,7 +51,8 @@ export class SetValueAndSubmit extends LitElement {
 
 
   async setFieldValue() {
-    console.log("Form object is:", this.form);
+    console.log("Available methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(this.form)));
+    console.log("Form object:", this.form);
 
 alert("Button clicked");
 
