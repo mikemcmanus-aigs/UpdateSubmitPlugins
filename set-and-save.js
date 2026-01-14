@@ -25,23 +25,30 @@ export class SetValueAndSubmit extends LitElement {
   }
 
   connectedCallback() {
-    super.connectedCallback();
+  super.connectedCallback();
 
-    // Get form host
-    this.form = this.closest('ntx-form');
-console.log("Closest ntx-form is:", this.form);
-    
-    if (!this.form) {
-      console.warn('SetValueAndSubmit: ntx-form not found');
-      return;
-    }
+  // try several locations where Nintex hosts the form
+  const root = this.getRootNode();
 
-    // Wait until Nintex form API is ready
-    this.form.addEventListener('ntx-form-ready', () => {
-      console.log('SetValueAndSubmit: form ready FIRED');
-      this.formReady = true;
-    });
+  this.form =
+    this.closest('ntx-form') ||
+    root.host?.closest?.('ntx-form') ||
+    root.querySelector?.('ntx-form') ||
+    document.querySelector('ntx-form');
+
+  console.log("Resolved form reference:", this.form);
+
+  if (!this.form) {
+    console.warn('SetValueAndSubmit: Still no ntx-form found');
+    return;
   }
+
+  this.form.addEventListener('ntx-form-ready', () => {
+    console.log('🔥 ntx-form-ready FIRED');
+    this.formReady = true;
+  });
+}
+
 
   async setFieldValue() {
     console.log("Form object is:", this.form);
