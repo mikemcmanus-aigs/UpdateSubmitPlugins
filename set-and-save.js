@@ -17,9 +17,9 @@ export class SetValueAndSubmit extends LitElement {
         visibility: true
       },
       properties: {
-        targetField: { type: 'string', required: true },
-        valueToSet: { type: 'string', required: true },
-        autoSubmit: { type: 'boolean' }
+        targetField: { type: 'string', required: true, title: 'Target Field' },
+        valueToSet: { type: 'string', required: true,  title: 'Value to Set' },
+        autoSubmit: { type: 'boolean',  title: 'Auto Submit on Click' }
       }
     };
   }
