@@ -31,15 +31,15 @@ export class SetValueAndSubmit extends LitElement {
   const root = this.getRootNode();
 
   this.form =
-    this.closest('ntx-form') ||
-    root.host?.closest?.('ntx-form') ||
-    root.querySelector?.('ntx-form') ||
-    document.querySelector('ntx-form');
+    this.closest('ntx-form-runtime') ||
+    root.host?.closest?.('ntx-form-runtime') ||
+    root.querySelector?.('ntx-form-runtime') ||
+    document.querySelector('ntx-form-runtime');
 
   console.log("Resolved form reference:", this.form);
 
   if (!this.form) {
-    console.warn('SetValueAndSubmit: Still no ntx-form found');
+    console.warn('SetValueAndSubmit: Still no ntx-form-runtime found');
     return;
   }
 
