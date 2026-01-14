@@ -1,4 +1,4 @@
-import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
+import { html, css, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
 export class UpdateStatusAndControl extends LitElement {
   static properties = {
@@ -76,3 +76,4 @@ export const MetaConfig = {
   }
 
 };
+
