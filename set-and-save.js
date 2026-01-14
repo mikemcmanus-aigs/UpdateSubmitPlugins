@@ -50,35 +50,37 @@ export class SetValueAndSubmit extends LitElement {
 }
 
 
-  async setFieldValue() {
-    console.log("Available methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(this.form)));
-    console.log("Form object:", this.form);
+  setFieldValue() {
 
-alert("Button clicked");
+  alert("Button clicked");
 
-    if (!this.form || !this.formReady) {
-      console.warn('SetValueAndSubmit: form not ready yet');
-      return;
+  // send value change event into Nintex
+  const evt = new CustomEvent("ntx-value-change", {
+    bubbles: true,
+    composed: true,
+    detail: {
+      name: this.targetField,
+      value: this.valueToSet
     }
+  });
 
-    try {
-      // safest API name across versions
-      await this.form.setValue(this.targetField, this.valueToSet);
-      console.log(`Set ${this.targetField} = ${this.valueToSet}`);
-    } catch (e) {
-      console.error('Error setting value', e);
-    }
+  this.dispatchEvent(evt);
 
-    if (this.autoSubmit) {
-      try {
-        // most reliable submit entrypoint
-        await this.form.requestSubmit();
-        console.log('Form submitted');
-      } catch (e) {
-        console.error('Error submitting form', e);
-      }
+  console.log("🚀 dispatched ntx-value-change", this.targetField, this.valueToSet);
+
+  if (this.autoSubmit) {
+    // trigger submit on the real HTML form element
+    const htmlForm = document.querySelector('form[name="ntxForm"]');
+
+    if (htmlForm) {
+      htmlForm.requestSubmit();
+      console.log("📝 submit requested");
+    } else {
+      console.warn("HTML form element not found");
     }
   }
+}
+
 
   render() {
     return html`
