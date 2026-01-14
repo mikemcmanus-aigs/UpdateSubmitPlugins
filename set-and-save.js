@@ -54,7 +54,6 @@ export class SetValueAndSubmit extends LitElement {
 
   alert("Button clicked");
 
-  // send value change event into Nintex
   const evt = new CustomEvent("ntx-value-change", {
     bubbles: true,
     composed: true,
@@ -64,22 +63,21 @@ export class SetValueAndSubmit extends LitElement {
     }
   });
 
-  this.dispatchEvent(evt);
-
-  console.log("🚀 dispatched ntx-value-change", this.targetField, this.valueToSet);
+  // dispatch from the FORM RUNTIME instead of “this”
+  if (this.form) {
+    this.form.dispatchEvent(evt);
+    console.log("Dispatched from form runtime");
+  } else {
+    this.dispatchEvent(evt);
+    console.log("Fallback dispatch from plugin");
+  }
 
   if (this.autoSubmit) {
-    // trigger submit on the real HTML form element
     const htmlForm = document.querySelector('form[name="ntxForm"]');
-
-    if (htmlForm) {
-      htmlForm.requestSubmit();
-      console.log("📝 submit requested");
-    } else {
-      console.warn("HTML form element not found");
-    }
+    if (htmlForm) htmlForm.requestSubmit();
   }
 }
+
 
 
   render() {
