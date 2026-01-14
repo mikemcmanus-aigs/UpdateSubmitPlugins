@@ -54,7 +54,7 @@ export class SetValueAndSubmit extends LitElement {
 
   alert("Button clicked");
 
-  const evt = new CustomEvent("ntx-value-change", {
+  const evt = new CustomEvent("ntx-value-changed", {
     bubbles: true,
     composed: true,
     detail: {
