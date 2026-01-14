@@ -1,6 +1,6 @@
+import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
-const { html, LitElement } = window.ntx.lit;
-class SetValueAndSubmit extends LitElement {
+export class SetValueAndSubmit extends LitElement {
 
     static properties = {
         targetField: { type: String },
@@ -10,7 +10,7 @@ class SetValueAndSubmit extends LitElement {
 
     static getMetaConfig() {
         return {
-            controlName: 'update-StatusValue',   // MUST MATCH ELEMENT NAME
+            controlName: 'update-status-value',   // MUST MATCH ELEMENT NAME
             fallbackDisableSubmit: false,
             version: '1.0',
             standardProperties: {
@@ -79,4 +79,4 @@ class SetValueAndSubmit extends LitElement {
 }
 
 
-customElements.define('update-StatusValue', SetValueAndSubmit);
+customElements.define('update-status-value', SetValueAndSubmit);
