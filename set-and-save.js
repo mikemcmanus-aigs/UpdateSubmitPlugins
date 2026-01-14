@@ -50,33 +50,36 @@ export class SetValueAndSubmit extends LitElement {
 }
 
 
-  setFieldValue() {
+ setFieldValue() {
 
   alert("Button clicked");
 
-  const evt = new CustomEvent("ntx-value-changed", {
-    bubbles: true,
-    composed: true,
-    detail: {
-      name: this.targetField,
-      value: this.valueToSet
-    }
-  });
+  // locate the actual input for the target control id
+  const input = document.querySelector(`input[name="${this.targetField}"]`)
+    || document.getElementById(this.targetField);
 
-  // dispatch from the FORM RUNTIME instead of “this”
-  if (this.form) {
-    this.form.dispatchEvent(evt);
-    console.log("Dispatched from form runtime");
-  } else {
-    this.dispatchEvent(evt);
-    console.log("Fallback dispatch from plugin");
+  console.log("Resolved input element:", input);
+
+  if (!input) {
+    console.warn("Target input not found");
+    return;
   }
+
+  // set value directly
+  input.value = this.valueToSet;
+
+  // dispatch events so Nintex/Angular picks it up
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+
+  console.log("Value set and events dispatched");
 
   if (this.autoSubmit) {
     const htmlForm = document.querySelector('form[name="ntxForm"]');
     if (htmlForm) htmlForm.requestSubmit();
   }
 }
+
 
 
 
