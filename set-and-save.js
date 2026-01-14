@@ -29,7 +29,8 @@ export class SetValueAndSubmit extends LitElement {
 
     // Get form host
     this.form = this.closest('ntx-form');
-
+console.log("Closest ntx-form is:", this.form);
+    
     if (!this.form) {
       console.warn('SetValueAndSubmit: ntx-form not found');
       return;
@@ -37,7 +38,7 @@ export class SetValueAndSubmit extends LitElement {
 
     // Wait until Nintex form API is ready
     this.form.addEventListener('ntx-form-ready', () => {
-      console.log('SetValueAndSubmit: form ready');
+      console.log('SetValueAndSubmit: form ready FIRED');
       this.formReady = true;
     });
   }
