@@ -1,6 +1,6 @@
-import { LitElement, html, css } from 'lit';
+import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
-class UpdateStatusControl extends LitElement {
+export class UpdateStatusControl extends LitElement {
   static properties = {
     statusField: { type: String },
     statusValue: { type: String },
@@ -74,4 +74,5 @@ export const MetaConfig = {
       description: 'Submit the form immediately after updating the status.'
     }
   }
+
 };
