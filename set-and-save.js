@@ -43,6 +43,7 @@ export class SetValueAndSubmit extends LitElement {
   }
 
   async setFieldValue() {
+console.log("Button was clicked");
 
     if (!this.form || !this.formReady) {
       console.warn('SetValueAndSubmit: form not ready yet');
