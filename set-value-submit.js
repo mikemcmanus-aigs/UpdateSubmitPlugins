@@ -10,7 +10,7 @@ export class SetValueAndSubmit extends LitElement {
 
     static getMetaConfig() {
         return {
-            controlName: 'Set Value And Submit',
+            controlName: 'set-value-submit',
             fallbackDisableSubmit: false,
             version: '1.0',
             standardProperties: {
@@ -88,4 +88,5 @@ export class SetValueAndSubmit extends LitElement {
 }
 
 const elementName = 'set-value-submit';
+
 customElements.define(elementName, SetValueAndSubmit);
