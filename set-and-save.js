@@ -54,31 +54,48 @@ export class SetValueAndSubmit extends LitElement {
 
   alert("Button clicked");
 
-  // locate the actual input for the target control id
-  const input = document.querySelector(`input[name="${this.targetField}"]`)
-    || document.getElementById(this.targetField);
+  // 1) Find the form runtime host
+  const formRuntime = document.querySelector("ntx-form-runtime");
 
-  console.log("Resolved input element:", input);
-
-  if (!input) {
-    console.warn("Target input not found");
+  if (!formRuntime) {
+    console.warn("Form runtime not found");
     return;
   }
 
-  // set value directly
-  input.value = this.valueToSet;
+  // 2) Get the Angular component instance
+  const ngFormCmp = formRuntime.__ngContext__ && formRuntime.__ngContext__[8];
 
-  // dispatch events so Nintex/Angular picks it up
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
+  console.log("Angular form component:", ngFormCmp);
 
-  console.log("Value set and events dispatched");
+  if (!ngFormCmp) {
+    console.warn("Angular form component not found");
+    return;
+  }
 
+  // 3) Find the control by formcontrolid
+  const control = ngFormCmp?.controls?.find?.(
+    c => c?.formControlId === this.targetField
+  );
+
+  console.log("Resolved Nintex control:", control);
+
+  if (!control) {
+    console.warn("Control not found by formControlId");
+    return;
+  }
+
+  // 4) Set value via Nintex/Angular API
+  control.setValue(this.valueToSet);
+
+  console.log("Value set through Nintex control API");
+
+  // 5) Auto-submit if enabled
   if (this.autoSubmit) {
     const htmlForm = document.querySelector('form[name="ntxForm"]');
     if (htmlForm) htmlForm.requestSubmit();
   }
 }
+
 
 
 
