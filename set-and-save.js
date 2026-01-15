@@ -28,23 +28,34 @@ export class SetValueAndSubmit extends LitElement {
   super.connectedCallback();
 
   const root = this.getRootNode();
+
   this.form =
     this.closest('ntx-form-runtime') ||
     root.host?.closest?.('ntx-form-runtime') ||
     root.querySelector?.('ntx-form-runtime') ||
     document.querySelector('ntx-form-runtime');
 
-  if (!this.form) return;
+  console.log("Resolved form reference:", this.form);
 
-  // handle both already-ready and future-ready cases
-  if (this.form.formReady) {
-    this.formReady = true;
-  } else {
-    this.form.addEventListener('ntx-form-ready', () => {
-      this.formReady = true;
-    });
+  if (!this.form) {
+    console.warn("No ntx-form-runtime found");
+    return;
   }
+
+  // ✅ CASE 1: form already ready
+  if (this.form.formReady === true) {
+    console.log("Form already ready");
+    this.formReady = true;
+    return;
+  }
+
+  // ✅ CASE 2: form not ready yet
+  this.form.addEventListener('ntx-form-ready', () => {
+    console.log("🔥 ntx-form-ready fired");
+    this.formReady = true;
+  }, { once: true });
 }
+
 
 
 
