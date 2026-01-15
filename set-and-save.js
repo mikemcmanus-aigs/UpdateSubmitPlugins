@@ -22,17 +22,28 @@ export class SetValueAndSubmit extends LitElement {
   }
 
   render() {
-    // Always render the button with an event listener
     return html`
-      <button @click=${() => this.onClick()}>
-        Set Value & Submit
-      </button>
+      <button @click=${this.onClick}>Set Value & Submit</button>
     `;
   }
 
   onClick() {
-    alert('Button clicked!'); // test alert
+    alert('Button clicked!');
+    // Here you can later call this.setFieldValue();
   }
 }
 
 customElements.define('set-text-save', SetValueAndSubmit);
+
+// ==== Upgrade pre-rendered templates ====
+const observer = new MutationObserver(() => {
+  document.querySelectorAll('set-text-save').forEach(el => {
+    if (!el.shadowRoot) {
+      const newEl = document.createElement('set-text-save');
+      el.replaceWith(newEl);
+    }
+  });
+});
+
+// Watch the entire document body for plugins being added
+observer.observe(document.body, { childList: true, subtree: true });
