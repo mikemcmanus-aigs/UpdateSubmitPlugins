@@ -27,72 +27,76 @@ export class SetValueAndSubmit extends LitElement {
   connectedCallback() {
   super.connectedCallback();
 
-  // try several locations where Nintex hosts the form
   const root = this.getRootNode();
-
   this.form =
     this.closest('ntx-form-runtime') ||
     root.host?.closest?.('ntx-form-runtime') ||
     root.querySelector?.('ntx-form-runtime') ||
     document.querySelector('ntx-form-runtime');
 
-  console.log("Resolved form reference:", this.form);
+  if (!this.form) return;
 
-  if (!this.form) {
-    console.warn('SetValueAndSubmit: Still no ntx-form-runtime found');
-    return;
-  }
-
-  this.form.addEventListener('ntx-form-ready', () => {
-    console.log('🔥 ntx-form-ready FIRED');
+  // handle both already-ready and future-ready cases
+  if (this.form.formReady) {
     this.formReady = true;
-  });
+  } else {
+    this.form.addEventListener('ntx-form-ready', () => {
+      this.formReady = true;
+    });
+  }
 }
 
 
- setFieldValue() {
 
+ async setFieldValue() {
   alert("Button clicked");
 
-  // 1) Find the form runtime host
-  const formRuntime = document.querySelector("ntx-form-runtime");
+  // wait until Nintex form is ready
+  if (!this.formReady) {
+    console.warn("Form not ready yet");
+    return;
+  }
 
+  const formRuntime = this.form || document.querySelector('ntx-form-runtime');
   if (!formRuntime) {
     console.warn("Form runtime not found");
     return;
   }
 
-  // 2) Get the Angular component instance
-  const ngFormCmp = formRuntime.__ngContext__ && formRuntime.__ngContext__[8];
+  const ngFormCmp = formRuntime.__ngContext__?.find?.(
+    x => x?.controls && Array.isArray(x.controls)
+  );
 
-  console.log("Angular form component:", ngFormCmp);
+  console.log("Resolved Angular form component:", ngFormCmp);
 
   if (!ngFormCmp) {
     console.warn("Angular form component not found");
     return;
   }
 
-  // 3) Find the control by formcontrolid
-  const control = ngFormCmp?.controls?.find?.(
+  const control = ngFormCmp.controls.find(
     c => c?.formControlId === this.targetField
   );
 
   console.log("Resolved Nintex control:", control);
 
   if (!control) {
-    console.warn("Control not found by formControlId");
+    console.warn("Control not found:", this.targetField);
     return;
   }
 
-  // 4) Set value via Nintex/Angular API
   control.setValue(this.valueToSet);
+  console.log("✅ Value set");
 
-  console.log("Value set through Nintex control API");
-
-  // 5) Auto-submit if enabled
   if (this.autoSubmit) {
-    const htmlForm = document.querySelector('form[name="ntxForm"]');
-    if (htmlForm) htmlForm.requestSubmit();
+    const htmlForm =
+      this.form?.querySelector?.('form[name="ntxForm"]') ||
+      document.querySelector('form[name="ntxForm"]');
+
+    if (htmlForm) {
+      htmlForm.requestSubmit();
+      console.log("🚀 Form submitted");
+    }
   }
 }
 
