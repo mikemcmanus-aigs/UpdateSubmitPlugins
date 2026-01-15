@@ -1,7 +1,6 @@
 import { html, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js';
 
 export class SetValueAndSubmit extends LitElement {
-
   static properties = {
     targetField: { type: String },
     valueToSet: { type: String },
@@ -22,83 +21,55 @@ export class SetValueAndSubmit extends LitElement {
     };
   }
 
+  constructor() {
+    super();
+    this.formReady = false;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Wait for the form to be ready
+    this.waitForForm();
+  }
+
+  async waitForForm() {
+    // Retry until the form runtime exists
+    let retries = 20;
+    while (retries-- > 0) {
+      this.form = document.querySelector('ntx-form-runtime');
+      if (this.form) break;
+      await new Promise(r => setTimeout(r, 250));
+    }
+
+    if (!this.form) {
+      console.warn('SetValueAndSubmit: ntx-form-runtime not found');
+      return;
+    }
+
+    this.form.addEventListener('ntx-form-ready', () => {
+      this.formReady = true;
+      console.log('Form is ready!');
+    });
+
+    // If the form is already ready
+    if (this.form.__ngContext__) {
+      this.formReady = true;
+      console.log('Form already ready');
+    }
+  }
+
   render() {
     return html`
-      <button @click=${this.onClick}>Set Value & Submit</button>
+      <button @click=${() => this.onClick()}>
+        Set Value & Submit
+      </button>
     `;
   }
 
-  async onClick() {
-    alert('Button clicked!');
-
-    // Wait until the form runtime is ready
-    const form = await this.waitForForm();
-    if (!form) return;
-
-    // Try to get Angular component from form runtime
-    const ngFormCmp = form.__ngContext__ && form.__ngContext__[8];
-    if (!ngFormCmp) {
-      console.warn('Angular form component not found');
+  onClick() {
+    if (!this.formReady) {
+      alert('Form not ready yet!');
       return;
     }
 
-    // Find the target control by formControlId
-    const control = ngFormCmp.controls.find(c => c.formControlId === this.targetField);
-    if (!control) {
-      console.warn('Target control not found:', this.targetField);
-      return;
-    }
-
-    // Set value using Nintex control API
-    control.setValue(this.valueToSet);
-    console.log('Value set for', this.targetField, 'to', this.valueToSet);
-
-    // Auto-submit if enabled
-    if (this.autoSubmit) {
-      const htmlForm = form.querySelector('form[name="ntxForm"]');
-      if (htmlForm) {
-        htmlForm.requestSubmit();
-        console.log('Form submitted');
-      }
-    }
-  }
-
-  waitForForm() {
-    return new Promise(resolve => {
-      const existingForm = document.querySelector('ntx-form-runtime');
-      if (existingForm) {
-        // Check if form is ready
-        existingForm.addEventListener('ntx-form-ready', () => resolve(existingForm), { once: true });
-        // If already fired, resolve immediately
-        if (existingForm.formReady) resolve(existingForm);
-        return;
-      }
-
-      // Otherwise, watch for it
-      const observer = new MutationObserver(() => {
-        const form = document.querySelector('ntx-form-runtime');
-        if (form) {
-          observer.disconnect();
-          form.addEventListener('ntx-form-ready', () => resolve(form), { once: true });
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-    });
-  }
-}
-
-customElements.define('set-text-save', SetValueAndSubmit);
-
-// ==== Upgrade pre-rendered templates ====
-const observer = new MutationObserver(() => {
-  document.querySelectorAll('set-text-save').forEach(el => {
-    if (!el.shadowRoot) {
-      const newEl = document.createElement('set-text-save');
-      // Copy attributes
-      [...el.attributes].forEach(attr => newEl.setAttribute(attr.name, attr.value));
-      el.replaceWith(newEl);
-    }
-  });
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
+    alert('Butt
